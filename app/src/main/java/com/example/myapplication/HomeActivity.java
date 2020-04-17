@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,6 +32,19 @@ public class HomeActivity extends AppCompatActivity {
         saludarUsuario();
         setUpToolbar();
         setUpAdapter();
+        itemSeleccionado();
+    }
+
+    private void itemSeleccionado() {
+        final ListView list = (ListView)findViewById(R.id.lv_libros);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Libro unLibro = (Libro)list.getItemAtPosition(position);
+
+                Toast.makeText(HomeActivity.this, unLibro.getNombre() , Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private List<Libro> getLibros() {
