@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapplication.Entities.Libro;
+import com.example.myapplication.Entities.LibroManager;
+
 public class AgregarLibroActivity extends AppCompatActivity {
 
     @Override
@@ -39,7 +42,17 @@ public class AgregarLibroActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!(et_nombre.getText().toString().equals("")) && !(et_autor.getText().toString().equals(""))){
-                    Toast.makeText(v.getContext(), "Libro agregado!", Toast.LENGTH_SHORT).show();
+
+                    Libro unLibro = new Libro();
+
+                    unLibro.setNombre(et_nombre.getText().toString());
+                    unLibro.setAutor(et_autor.getText().toString());
+
+                    LibroManager.getInstance().agregarLibro(unLibro);
+
+                    Toast.makeText(v.getContext(), unLibro.getNombre() + " - " + unLibro.getAutor(), Toast.LENGTH_SHORT).show();
+
+                    finish();
                 }else{
                     Toast.makeText(v.getContext(), "Te faltó completar algún campo.", Toast.LENGTH_SHORT).show();
                 }

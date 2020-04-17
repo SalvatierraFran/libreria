@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.myapplication.Entities.Libro;
+import com.example.myapplication.Entities.LibroManager;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,6 +34,13 @@ public class HomeActivity extends AppCompatActivity {
         setUpToolbar();
         setUpAdapter();
         itemSeleccionado();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.setLibros(getLibros());
+        adapter.notifyDataSetChanged();
     }
 
     private void itemSeleccionado() {
@@ -55,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
         misLibros.add(new Libro(2, "Los juegos del hambre en llamas", "Suzanne Collins"));
         misLibros.add(new Libro(3, "Maze Runner", "James Dashner"));
 
-        return misLibros;
+        return LibroManager.getInstance().getLibros();
     }
 
     private void setUpAdapter() {

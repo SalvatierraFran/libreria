@@ -52,4 +52,8 @@ public class LibrosAdapter extends BaseAdapter {
 
         return v;
     }
+
+    public void setLibros(List<Libro> libros){
+        this.misLibros = libros;
+    }
 }
