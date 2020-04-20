@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.myapplication.Entities.Libro;
@@ -34,6 +36,19 @@ public class HomeActivity extends AppCompatActivity {
         setUpToolbar();
         setUpAdapter();
         itemSeleccionado();
+
+        /*SearchView searchView = findViewById(R.id.sv_libros);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });*/
     }
 
     @Override
@@ -104,8 +119,26 @@ public class HomeActivity extends AppCompatActivity {
         switch (id){
             case R.id.menu_add:
                 goToAgregarLibro();
+                break;
+
+            case R.id.action_logoff:
+                logOff();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logOff() {
+        SharedPreferences prefs = getSharedPreferences(MainActivity.APP_PREFS_NAME, MODE_PRIVATE);
+        if(prefs.contains(MainActivity.KEY_CORREO) && prefs.contains(MainActivity.KEY_PASS)){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear(); //Borra todoo.
+            editor.apply();
+        }
+
+        Intent lofOffIntent = new Intent(this, MainActivity.class);
+        startActivity(lofOffIntent);
+        finish();
     }
 
     private void goToAgregarLibro() {

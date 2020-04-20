@@ -8,4 +8,7 @@
         android:title="menu_add"
         android:icon="@drawable/ic_add_white_24dp"/>
 
+    <item android:id="@+id/action_logoff"
+        android:title="Cerrar sesión"/>
+
 </menu>
