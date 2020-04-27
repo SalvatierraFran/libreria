@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -17,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.myapplication.Entities.Libro;
 import com.example.myapplication.Entities.LibroManager;
+import com.example.myapplication.database.AppDataBase;
+import com.example.myapplication.database.LibrosDao;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -54,10 +57,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.setLibros(getLibros());
+        /*adapter.setLibros(getLibrosDb());
+        adapter.notifyDataSetChanged();*/
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getLibrosDb();
         adapter.notifyDataSetChanged();
     }
 
+    //region seleccionarItemEnListView
     private void itemSeleccionado() {
         final ListView list = (ListView)findViewById(R.id.lv_libros);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,8 +80,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+    //endregion
 
-    private List<Libro> getLibros() {
+    //region getLibros
+    /*private List<Libro> getLibros() {
         List<Libro> misLibros = new ArrayList<>();
 
         misLibros.add(new Libro(0, "Canción de hielo y fuego", "George R. R. Martin"));
@@ -79,14 +92,28 @@ public class HomeActivity extends AppCompatActivity {
         misLibros.add(new Libro(3, "Maze Runner", "James Dashner"));
 
         return LibroManager.getInstance().getLibros();
-    }
+    }*/
+    //endregion
 
+    //region getLibrosDb
+    public List<Libro> getLibrosDb(){
+        AppDataBase db = AppDataBase.getInstance(this);
+        LibrosDao dao = db.getLibrosDao();
+        List<Libro> libros = dao.obtenerLibros();
+
+        return libros;
+    }
+    //endregion
+
+    //region setUpAdapter
     private void setUpAdapter() {
         lvLibros = findViewById(R.id.lv_libros);
-        adapter = new LibrosAdapter(getLibros());
+        adapter = new LibrosAdapter(getLibrosDb());
         lvLibros.setAdapter(adapter);
     }
+    //endregion
 
+    //region setUpToolbar
     private void setUpToolbar() {
         Toolbar homeToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(homeToolbar);
@@ -95,7 +122,9 @@ public class HomeActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Mis libros");
         }
     }
+    //endregion
 
+    //region saludarUsuario
     private void saludarUsuario() {
         Bundle homeBundle = getIntent().getExtras();
         if(homeBundle != null){
@@ -105,13 +134,17 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, rdo, Toast.LENGTH_LONG).show();
         }
     }
+    //endregion
 
+    //region crearMenu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
         return super.onCreateOptionsMenu(menu);
     }
+    //endregion
 
+    //region seleccionarItemEnMenu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -127,7 +160,9 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    //endregion
 
+    //region Desloguear
     private void logOff() {
         SharedPreferences prefs = getSharedPreferences(MainActivity.APP_PREFS_NAME, MODE_PRIVATE);
         if(prefs.contains(MainActivity.KEY_CORREO) && prefs.contains(MainActivity.KEY_PASS)){
@@ -140,9 +175,25 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(lofOffIntent);
         finish();
     }
+    //endregion
 
+    //region goToAgregarLibro
     private void goToAgregarLibro() {
         Intent agregarLibroIntent = new Intent(HomeActivity.this, AgregarLibroActivity.class);
         startActivity(agregarLibroIntent);
+    }
+    //endregion
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        /*if(requestCode == 11){
+            if(resultCode == RESULT_OK){
+                getLibrosDb();
+                adapter.notifyDataSetChanged();
+            }
+        }*/
     }
 }

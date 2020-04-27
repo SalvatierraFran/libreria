@@ -3,6 +3,8 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
+import android.graphics.Region;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.myapplication.Entities.Libro;
 import com.example.myapplication.Entities.LibroManager;
+import com.example.myapplication.database.AppDataBase;
+import com.example.myapplication.database.LibrosDao;
 
 public class AgregarLibroActivity extends AppCompatActivity {
 
@@ -20,10 +24,36 @@ public class AgregarLibroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_agregar_libro);
 
         SetUpToolbar();
-        agregarLibro();
+        //agregarLibro();
+        agregarLibroDb();
         limpiarCampos();
     }
 
+    //region agregarLibroDb
+    private void agregarLibroDb() {
+        final String name = ((EditText)findViewById(R.id.et_add_name)).getText().toString();
+        final String autor = ((EditText)findViewById(R.id.et_add_autor)).getText().toString();
+
+        ((Button)findViewById(R.id.btn_add)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Libro unLibro = new Libro(name, autor);
+
+                AppDataBase db = AppDataBase.getInstance(AgregarLibroActivity.this);
+                LibrosDao dao = db.getLibrosDao();
+                dao.crearLibro(unLibro);
+
+                Toast.makeText(AgregarLibroActivity.this, "Libro agregado!", Toast.LENGTH_SHORT).show();
+
+                //setResult(RESULT_OK);
+
+                finish();
+            }
+        });
+    }
+    //endregion
+
+    //region LimpiarCampos
     private void limpiarCampos() {
         ((Button)findViewById(R.id.btn_clean)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,8 +63,10 @@ public class AgregarLibroActivity extends AppCompatActivity {
             }
         });
     }
+    //endregion
 
-    private void agregarLibro() {
+    //region agregarLibro
+    /*private void agregarLibro() {
         final EditText et_nombre = findViewById(R.id.et_add_name);
         final EditText et_autor = findViewById(R.id.et_add_autor);
 
@@ -58,8 +90,10 @@ public class AgregarLibroActivity extends AppCompatActivity {
                 }
             }
         });
-    }
+    }*/
+    //endregion
 
+    //region setUpToolbar
     private void SetUpToolbar() {
         Toolbar miToolbar = findViewById(R.id.agregarLibroToolbar);
         setSupportActionBar(miToolbar);
@@ -68,4 +102,5 @@ public class AgregarLibroActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Agregar libro");
         }
     }
+    //endregion
 }
